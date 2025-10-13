@@ -2,11 +2,10 @@
 #                                                        #
 #               MEK Technopat Grabber CLI               #
 #                                                        #
-#  To Do:                                               #
-#  - Sayfalardan haberleri çek                        #
-#  - 403 hatasını önle (User-Agent ekle)               #
-#  - Haber başlıkları ve linklerini CLI'de göster      #
-#  - İleride sayfa numarası config ile değiştirilebilir #
+#  To Do (implemented):                                 #
+#  - İlk sayfadan haberleri çek                          #
+#  - 403 hatasını önledik (User-Agent eklendi)         #
+#  - Haber başlıkları ve linkleri CLI'de gösteriliyor   #
 #                                                        #
 ##########################################################
 import requests
@@ -15,9 +14,20 @@ from bs4 import BeautifulSoup
 # Haber sayfası (default page)
 BASE_URL = "https://www.technopat.net/haber/"
 
-def fetch_news(page_url=BASE_URL):
+def fetch_news():
+    """
+    Sadece ilk sayfadaki haberleri çeker.
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/118.0.0.0 Safari/537.36"
+        )
+    }
+
     try:
-        resp = requests.get(page_url)
+        resp = requests.get(BASE_URL, headers=headers)
         resp.raise_for_status()
     except requests.RequestException as e:
         print(f"Hata: {e}")
