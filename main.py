@@ -3,21 +3,19 @@
 #               MEK Technopat Grabber CLI               #
 #                                                        #
 #  To Do (implemented):                                 #
-#  - İlk sayfadan haberleri çek                          #
-#  - 403 hatasını önledik (User-Agent eklendi)         #
-#  - Haber başlıkları ve linkleri CLI'de gösteriliyor   #
-#                                                        #
+#                            
+#                                                       #
+#  -   
+#  - Navigator ile haberler arasında gezinme ekleyecegim.  
 ##########################################################
 import requests
 from bs4 import BeautifulSoup
 
-# Haber sayfası (default page)
+
 BASE_URL = "https://www.technopat.net/haber/"
 
 def fetch_news():
-    """
-    Sadece ilk sayfadaki haberleri çeker.
-    """
+
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -34,7 +32,7 @@ def fetch_news():
         return
 
     soup = BeautifulSoup(resp.text, "html.parser")
-    articles = soup.select("article.jeg_post")  # Tüm haberler
+    articles = soup.select("article.jeg_post")  
 
     if not articles:
         print("Haber bulunamadı.")
