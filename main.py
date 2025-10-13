@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 ##########################################################
 #                                                        #
-#              MEK Technopat Grabber CLI v3              #
-#                                                        #
-#  Features:                                             #
-#  - Kutu içinde outline (liste görünümü)                #
-#  - Renk optimizasyonu                                  #
-#  - İleri / Geri navigasyon                             #
-#                                                        #
+#              MEK Technopat Grabber CLI v4              #
 ##########################################################
 
 import requests
 from bs4 import BeautifulSoup
 from colorama import Fore, Style, init
 import os
+import shutil
+import textwrap
 
 init(autoreset=True)
 
@@ -28,18 +24,29 @@ HEADERS = {
 
 
 def clear_screen():
-    """Terminal ekranını temizler."""
     os.system("cls" if os.name == "nt" else "clear")
 
 
 def draw_box(title, content_lines, color=Fore.CYAN):
-    """Kutulu metin çizimi."""
-    width = max(len(line) for line in content_lines + [title]) + 4
+    """Kutulu metin çizimi (otomatik satır kaydırmalı)."""
+    term_width = shutil.get_terminal_size((100, 40)).columns
+    max_width = min(term_width - 4, 100)  # 100 karakteri geçmesin
+
+    wrapped_lines = []
+    for line in content_lines:
+        for wrapped in textwrap.wrap(line, width=max_width - 4):
+            wrapped_lines.append(wrapped)
+
+    width = max(len(title), *(len(l) for l in wrapped_lines)) + 4
+    width = min(width, max_width)
+
     print(color + "┌" + "─" * (width - 2) + "┐")
     print(color + f"│ {Style.BRIGHT}{title.ljust(width - 4)} │")
     print(color + "├" + "─" * (width - 2) + "┤")
-    for line in content_lines:
+
+    for line in wrapped_lines:
         print(color + f"│ {line.ljust(width - 4)} │")
+
     print(color + "└" + "─" * (width - 2) + "┘" + Style.RESET_ALL)
 
 
@@ -85,16 +92,16 @@ def fetch_news_content(link):
 
 
 def show_outline(news_list):
-    """Kutu içinde outline (başlık listesi)."""
+    """Outline görünümü (kutulu başlık listesi)."""
     clear_screen()
     print(Style.BRIGHT + Fore.CYAN + "\n📰  TECHNOPAT HABERLERİ  📰\n")
     for i, news in enumerate(news_list, start=1):
         draw_box(
             f"Haber {i}",
-            [Fore.GREEN + news['title'], Fore.BLUE + news['link']],
+            [Fore.GREEN + news["title"], Fore.BLUE + news["link"]],
             color=Fore.CYAN,
         )
-    print(Style.DIM + "-" * 70)
+    print(Style.DIM + "-" * 80)
 
 
 def navigate_news(news_list):
