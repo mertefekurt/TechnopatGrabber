@@ -16,10 +16,10 @@
 ## Ekran Görüntüleri
 
 ### Outline Görünümü  
-![Outline View](screenshots/SS1.PNG)
+![Outline View](screenshots/SS1.png)
 
 ### Haber Detayı Görünümü  
-![Detail View](screenshots/SS2.PNG)
+![Detail View](screenshots/SS2.png)
 
 ---
 
