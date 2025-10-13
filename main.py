@@ -1,4 +1,14 @@
-#!/usr/bin/env python3
+##########################################################
+#                                                        #
+#               MEK Technopat Grabber CLI               #
+#                                                        #
+#  To Do:                                               #
+#  - Sayfalardan haberleri çek                        #
+#  - 403 hatasını önle (User-Agent ekle)               #
+#  - Haber başlıkları ve linklerini CLI'de göster      #
+#  - İleride sayfa numarası config ile değiştirilebilir #
+#                                                        #
+##########################################################
 import requests
 from bs4 import BeautifulSoup
 
