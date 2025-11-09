@@ -1,6 +1,6 @@
 #  Technopat Grabber CLI v4
 
- Technopat Grabber, Technopat.net üzerindeki güncel teknoloji haberlerini terminal üzerinden hızlı ve okunabilir bir şekilde sunan bir Python komut satırı uygulamasıdır.  
+ Technopat Grabber, Technopat.net üzerindeki güncel teknoloji haberlerini terminal üzerinden hızlı ve okunabilir bir şekilde sunan bir Python komut satırı uygulamasıdır.  Kullanım tamamen sizin sorumluluğunuzdadır.
 
 
 ---
