@@ -14,6 +14,7 @@ import textwrap
 init(autoreset=True)
 
 BASE_URL = "https://www.technopat.net/haber/"
+REQUEST_TIMEOUT = 10
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -24,18 +25,19 @@ HEADERS = {
 
 
 def clear_screen():
+    """Clear the terminal before rendering a new navigation view."""
     os.system("cls" if os.name == "nt" else "clear")
 
 
 def draw_box(title, content_lines, color=Fore.CYAN):
-    """Kutulu metin çizimi (otomatik satır kaydırmalı)."""
+    """Render wrapped terminal content inside a simple box."""
     term_width = shutil.get_terminal_size((100, 40)).columns
     max_width = min(term_width - 4, 100)  # 100 karakteri geçmesin
 
     wrapped_lines = []
     for line in content_lines:
-        for wrapped in textwrap.wrap(line, width=max_width - 4):
-            wrapped_lines.append(wrapped)
+        wrapped = textwrap.wrap(line, width=max_width - 4) or [""]
+        wrapped_lines.extend(wrapped)
 
     width = max(len(title), *(len(l) for l in wrapped_lines)) + 4
     width = min(width, max_width)
@@ -51,9 +53,9 @@ def draw_box(title, content_lines, color=Fore.CYAN):
 
 
 def fetch_news_list():
-    """Technopat haber listesini çeker."""
+    """Fetch the latest Technopat news cards from the listing page."""
     try:
-        resp = requests.get(BASE_URL, headers=HEADERS)
+        resp = requests.get(BASE_URL, headers=HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
     except requests.RequestException as e:
         print(f"{Fore.RED}Hata: {e}")
@@ -74,9 +76,9 @@ def fetch_news_list():
 
 
 def fetch_news_content(link):
-    """Tek bir haberin içeriğini çeker."""
+    """Fetch and normalize the article body for a single news URL."""
     try:
-        resp = requests.get(link, headers=HEADERS)
+        resp = requests.get(link, headers=HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
     except requests.RequestException:
         return f"{Fore.RED}İçerik alınamadı."
@@ -92,7 +94,7 @@ def fetch_news_content(link):
 
 
 def show_outline(news_list):
-    """Outline görünümü (kutulu başlık listesi)."""
+    """Render a compact boxed outline of all fetched news items."""
     clear_screen()
     print(Style.BRIGHT + Fore.CYAN + "\n📰  TECHNOPAT HABERLERİ  📰\n")
     for i, news in enumerate(news_list, start=1):
@@ -105,7 +107,7 @@ def show_outline(news_list):
 
 
 def navigate_news(news_list):
-    """Kullanıcı haberleri kutu içinde gezebilir."""
+    """Run the interactive terminal navigator for fetched news items."""
     if not news_list:
         print(f"{Fore.RED}Haber bulunamadı.")
         return
