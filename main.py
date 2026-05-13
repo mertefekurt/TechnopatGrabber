@@ -32,7 +32,7 @@ def clear_screen():
 def draw_box(title, content_lines, color=Fore.CYAN):
     """Render wrapped terminal content inside a simple box."""
     term_width = shutil.get_terminal_size((100, 40)).columns
-    max_width = min(term_width - 4, 100)  # 100 karakteri geçmesin
+    max_width = min(term_width - 4, 100)  # Keep the layout within 100 characters.
 
     wrapped_lines = []
     for line in content_lines:
@@ -58,7 +58,7 @@ def fetch_news_list():
         resp = requests.get(BASE_URL, headers=HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
     except requests.RequestException as e:
-        print(f"{Fore.RED}Hata: {e}")
+        print(f"{Fore.RED}Error: {e}")
         return []
 
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -67,10 +67,10 @@ def fetch_news_list():
 
     for article in articles:
         title_tag = article.select_one("h3.jeg_post_title a")
-        title = title_tag.text.strip() if title_tag else "Başlık yok"
-        link = title_tag["href"] if title_tag else "Link yok"
+        title = title_tag.text.strip() if title_tag else "No title"
+        link = title_tag["href"] if title_tag else "No link"
         img_tag = article.select_one(".jeg_thumb img")
-        img_src = img_tag["src"] if img_tag else "Görsel yok"
+        img_src = img_tag["src"] if img_tag else "No image"
         news_list.append({"title": title, "link": link, "img": img_src})
     return news_list
 
@@ -81,25 +81,25 @@ def fetch_news_content(link):
         resp = requests.get(link, headers=HEADERS, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
     except requests.RequestException:
-        return f"{Fore.RED}İçerik alınamadı."
+        return f"{Fore.RED}Content could not be fetched."
 
     soup = BeautifulSoup(resp.text, "html.parser")
     content_div = soup.select_one(".content-inner")
     if not content_div:
-        return f"{Fore.YELLOW}İçerik bulunamadı."
+        return f"{Fore.YELLOW}Content could not be found."
 
     paragraphs = content_div.find_all("p")
     content = "\n".join(p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True))
-    return content if content else f"{Fore.YELLOW}İçerik yok."
+    return content if content else f"{Fore.YELLOW}No content available."
 
 
 def show_outline(news_list):
     """Render a compact boxed outline of all fetched news items."""
     clear_screen()
-    print(Style.BRIGHT + Fore.CYAN + "\n📰  TECHNOPAT HABERLERİ  📰\n")
+    print(Style.BRIGHT + Fore.CYAN + "\nTECHNOPAT NEWS\n")
     for i, news in enumerate(news_list, start=1):
         draw_box(
-            f"Haber {i}",
+            f"News {i}",
             [Fore.GREEN + news["title"], Fore.BLUE + news["link"]],
             color=Fore.CYAN,
         )
@@ -109,7 +109,7 @@ def show_outline(news_list):
 def navigate_news(news_list):
     """Run the interactive terminal navigator for fetched news items."""
     if not news_list:
-        print(f"{Fore.RED}Haber bulunamadı.")
+        print(f"{Fore.RED}No news items were found.")
         return
 
     idx = 0
@@ -118,15 +118,15 @@ def navigate_news(news_list):
         news = news_list[idx]
         title = f"[{idx + 1}/{len(news_list)}] {news['title']}"
         lines = [
-            Fore.BLUE + f"🔗 {news['link']}",
-            Fore.MAGENTA + f"🖼  {news['img']}",
+            Fore.BLUE + f"Link: {news['link']}",
+            Fore.MAGENTA + f"Image: {news['img']}",
             "",
             Fore.GREEN + fetch_news_content(news["link"]),
         ]
         draw_box(title, lines, color=Fore.YELLOW)
 
-        print(Style.BRIGHT + Fore.CYAN + "\n⬅️  [P]rev | ➡️  [N]ext | [O]utline | [Q]uit")
-        choice = input(Fore.WHITE + "\nSeçim: ").strip().lower()
+        print(Style.BRIGHT + Fore.CYAN + "\n[P]revious | [N]ext | [O]utline | [Q]uit")
+        choice = input(Fore.WHITE + "\nChoice: ").strip().lower()
 
         if choice == "n":
             idx = (idx + 1) % len(news_list)
@@ -134,13 +134,13 @@ def navigate_news(news_list):
             idx = (idx - 1) % len(news_list)
         elif choice == "o":
             show_outline(news_list)
-            input(Fore.CYAN + "\nDevam etmek için Enter'a bas...")
+            input(Fore.CYAN + "\nPress Enter to continue...")
         elif choice == "q":
-            print(Fore.RED + "\nÇıkılıyor...")
+            print(Fore.RED + "\nExiting...")
             break
         else:
-            print(Fore.RED + "Geçersiz giriş.")
-            input(Fore.YELLOW + "Devam için Enter...")
+            print(Fore.RED + "Invalid input.")
+            input(Fore.YELLOW + "Press Enter to continue...")
 
 
 if __name__ == "__main__":
