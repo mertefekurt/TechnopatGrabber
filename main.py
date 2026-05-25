@@ -1,3 +1,4 @@
+"""Core utilities for this package."""
 #!/usr/bin/env python3
 ##########################################################
 #                                                        #
