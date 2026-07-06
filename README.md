@@ -2,21 +2,30 @@
 
 ![Technopat Grabber cover](assets/readme-cover.svg)
 
-A terminal reader for Technopat headlines. It keeps the feed, navigation, and article opening flow in one small Python script.
+Terminal reader for Technopat headlines.
 
-## Run
+## Project route
+
+![Workflow diagram](assets/readme-diagram.svg)
+
+## Run it locally
 
 ```bash
 git clone https://github.com/mertefekurt/TechnopatGrabber.git
 cd TechnopatGrabber
-python -m pip install -r requirements.txt
 python3 main.py
 ```
 
-## Repository shape
+## Notes from the build
+
+- Designed as a focused desktop lab repo.
+- Keeps setup short.
+- Prioritizes readable output over infrastructure.
+
+## Open these first
 
 ```text
-main.py             headline fetch and terminal flow
-requirements.txt   dependencies
-screenshots/        captured interface states
+screenshots/  project file
+.gitignore    project file
+main.py       application entry
 ```
